@@ -1,0 +1,74 @@
+/* public/css/main.css
+   Core styles, card hover + animations, responsive.
+   Keep this file and tweak images/colors later.
+*/
+
+/* Root palette */
+:root{
+  --gold: #cfa93b;
+  --gold-dark: #b8860b;
+  --muted: #9aa7b2;
+  --bg-dark: #07080a;
+  --glass: rgba(255,255,255,0.04);
+}
+
+/* Base */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:'Montserrat',system-ui,-apple-system,"Segoe UI",Roboto,Arial;color:#fff;background:linear-gradient(135deg,var(--bg-dark) 0%, #121212 100%);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+
+/* Header */
+header img { display:block }
+header a { text-decoration:none }
+
+/* Hero */
+.hero-outer{position:relative;min-height:72vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;opacity:0.55}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg, rgba(2,6,11,0.55), rgba(2,6,11,0.85));z-index:-1}
+
+/* Buttons */
+.btn-gold{background:var(--gold);color:#081426;padding:.9rem 1.25rem;border-radius:.6rem;font-weight:700;box-shadow:0 12px 34px rgba(207,169,59,0.14);transition:transform .18s ease,box-shadow .18s ease}
+.btn-gold:hover{transform:translateY(-4px);box-shadow:0 22px 48px rgba(207,169,59,0.18)}
+.btn-ghost{border:1px solid rgba(255,255,255,0.08);padding:.7rem 1rem;border-radius:.6rem;color:inherit}
+
+/* Price strip */
+.price-table{background:var(--glass);display:flex;align-items:center;justify-content:space-between;gap:12px;border-radius:12px;padding:.6rem}
+.price-item{min-width:120px;padding:.5rem .75rem;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));text-align:center}
+.price-item .karat{font-size:.95rem;color:var(--muted)}
+.price-item .value{font-size:1.05rem;font-weight:700;color:var(--gold)}
+
+/* Card (adapted from the CodePen) */
+.card{background:#0b0b0b;border-radius:14px;overflow:hidden;position:relative;transition:transform .35s cubic-bezier(.2,.9,.3,1),box-shadow .35s ease;box-shadow:0 8px 22px rgba(0,0,0,0.45)}
+.card:hover{transform:translateY(-12px);box-shadow:0 24px 60px rgba(0,0,0,0.6)}
+.card-media{height:150px;background-size:cover;background-position:center}
+.card-body{padding:1rem}
+
+/* spin icon (decor) */
+.spin-icon{display:inline-block;width:48px;height:48px;color:var(--gold);animation:spin-slow 10s linear infinite}
+@keyframes spin-slow{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+
+/* glass */
+.glass{background:rgba(255,255,255,0.03);backdrop-filter:blur(6px)}
+
+/* details */
+details summary{cursor:pointer;outline:none}
+details[open] summary{font-weight:600}
+
+/* footer */
+.site-footer{background:transparent;padding:3rem 0;color:#cbd5e1}
+
+/* utilities */
+.text-muted{color:var(--muted)}
+
+/* small screens */
+@media (max-width:768px){
+  .price-item{min-width:95px}
+  .hero-caption{padding:0 16px}
+  .card-media{height:120px}
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .card, .btn-gold, .spin-icon { transition:none; animation:none }
+  .hero-video{animation:none}
+}
