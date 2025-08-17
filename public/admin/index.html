@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin • Solusi Emas — Update Harga</title>
+  <meta name="description" content="Admin panel untuk update data/price.json — Solusi Emas" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --gold:#cfa93b;
+      --bg:#07070a;
+      --card:#0b0b0d;
+      --muted:#cfcfcf;
+      --glass: rgba(255,255,255,0.03);
+      --ok: #31a354;
+      --err: #ff6b6b;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Montserrat,system-ui,Segoe UI,Roboto,Arial;color:#fff;background:linear-gradient(135deg,var(--bg),#141214);-webkit-font-smoothing:antialiased}
+    a{color:var(--gold)}
+    .wrap{max-width:1100px;margin:28px auto;padding:20px}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,#07122a,#0b2745);display:flex;align-items:center;justify-content:center}
+    .logo img{width:40px;height:40px;object-fit:contain}
+    h1{margin:0;font-family:'Playfair Display',serif;color:var(--gold);font-size:22px}
+    .sub{color:var(--muted);margin-top:6px;font-size:13px}
+
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 10px 40px rgba(0,0,0,0.6)}
+    .section-gap{height:14px}
+
+    /* controls */
+    .row{display:flex;gap:12px;align-items:center}
+    .row.top{flex-wrap:wrap;gap:16px}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    input[type="text"], input[type="number"], select, textarea{width:100%;padding:10px;border-radius:10px;background:#080808;border:1px solid rgba(255,255,255,0.03);color:#fff}
+    textarea{min-height:96px}
+    .muted{color:var(--muted)}
+    .small{font-size:13px;color:var(--muted)}
+    .hint{font-size:13px;color:var(--muted);margin-top:8px}
+
+    .btn{background:var(--gold);color:#071226;padding:10px 14px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--gold)}
+    .btn.warn{background:transparent;border:1px solid rgba(255,100,30,0.12);color:#ffb68a}
+
+    /* inputs grid */
+    .inputs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+    .input-tile{background:#070707;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
+    .input-tile h4{margin:0;color:var(--gold);font-size:15px}
+    .input-tile input{margin-top:8px}
+
+    /* preview & tiles */
+    .preview{margin-top:12px;background:#060607;padding:12px;border-radius:8px;font-family:monospace;color:#d6d6d6;max-height:260px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
+    .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+    .tile{background:#0a0a0b;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);text-align:center}
+    .tile h5{margin:0;color:var(--gold);font-weight:700}
+    .tile p{margin:6px 0 0;color:#dcdcdc;font-weight:700}
+
+    /* status */
+    .status{margin-top:12px;padding:12px;border-radius:10px;display:none}
+    .status.ok{background:rgba(49,163,84,0.08);border:1px solid rgba(49,163,84,0.12);color:var(--ok)}
+    .status.err{background:rgba(255,75,75,0.06);border:1px solid rgba(255,75,75,0.12);color:var(--err)}
+    pre.smalljson{font-family:monospace;font-size:12px;color:#eaeaea;white-space:pre-wrap;word-break:break-word}
+
+    footer.note{margin-top:14px;color:var(--muted);font-size:13px}
+
+    @media (max-width:1000px){ .inputs-grid{grid-template-columns:repeat(2,1fr)} .tiles{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:640px){ .inputs-grid{grid-template-columns:1fr} .tiles{grid-template-columns:1fr} .row{flex-direction:column;align-items:stretch} }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo"><img src="/assets/logo.png" alt="logo"></div>
+      <div>
+        <h1>Admin Panel — Solusi Emas</h1>
+        <div class="sub">Update harga harian (data/price.json) — gunakan endpoint functions/update-price untuk persist. Hati-hati: simpan ADMIN KEY di environment (Netlify/Vercel).</div>
+      </div>
+    </header>
+
+    <div class="card" aria-labelledby="admin-controls">
+      <div class="row top" style="align-items:flex-start">
+        <div style="flex:1;min-width:260px">
+          <label for="adminKey">ADMIN KEY (x-admin-key)</label>
+          <input id="adminKey" type="text" placeholder="Masukkan ADMIN KEY (server harus memverifikasi)" autocomplete="off" />
+          <div class="hint">Admin key diperlukan untuk memanggil <code>/.netlify/functions/update-price</code>. Server harus mencocokkan nilai ini.</div>
+        </div>
+
+        <div style="width:220px">
+          <label for="source">Source (keterangan)</label>
+          <input id="source" type="text" placeholder="manual" />
+          <div class="small muted" style="margin-top:8px">Contoh: manual / supplier / api-lokal</div>
+        </div>
+
+        <div style="width:220px">
+          <label for="loadMode">Load mode</label>
+          <select id="loadMode">
+            <option value="auto">Auto: try ../data/price.json → /data/price.json → functions</option>
+            <option value="file">Force file (../data/price.json)</option>
+            <option value="func">Force function (/.netlify/functions/get-price)</option>
+          </select>
+          <div class="small muted" style="margin-top:8px">Gunakan bila environment berbeda.</div>
+        </div>
+      </div>
+
+      <div class="section-gap"></div>
+
+      <div>
+        <label>Harga per Kadar (edit nilai, lalu tekan PREVIEW atau UPDATE)</label>
+        <div class="inputs-grid" id="inputsGrid">
+          <!-- injected inputs -->
+        </div>
+      </div>
+
+      <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button id="btnLoad" class="btn">Load current</button>
+        <button id="btnReset" class="btn ghost">Reset fields</button>
+        <button id="btnPreview" class="btn ghost">Preview JSON</button>
+        <button id="btnImport" class="btn ghost">Import JSON file</button>
+        <input id="fileInput" type="file" accept="application/json" style="display:none" />
+        <button id="btnPaste" class="btn ghost">Paste JSON</button>
+
+        <div style="margin-left:auto" class="small muted">Last loaded: <span id="loadedAt">-</span></div>
+      </div>
+
+      <div class="preview" id="jsonPreview" style="display:none" aria-hidden="true"></div>
+
+      <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button id="btnUpdate" class="btn">Update Price (POST)</button>
+        <button id="btnDownload" class="btn ghost">Download JSON</button>
+        <button id="btnClearCache" class="btn warn">Clear Local Cache</button>
+        <div class="small muted" style="margin-left:auto">Target endpoint: <code>/.netlify/functions/update-price</code></div>
+      </div>
+
+      <div id="status" class="status" role="status" style="display:none"></div>
+
+      <div style="margin-top:14px">
+        <div class="small muted">Preview Tiles — cepat lihat rentang harga</div>
+        <div class="tiles" id="previewTiles"></div>
+      </div>
+
+      <div class="section-gap"></div>
+
+      <div class="card" style="background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.06));padding:12px">
+        <div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap">
+          <div style="flex:1;min-width:240px">
+            <strong>Tips & Troubleshoot</strong>
+            <div class="muted" style="margin-top:8px">
+              • Jika fetch gagal: cek path file <code>/data/price.json</code> di repo.<br>
+              • Untuk persist (menulis) gunakan Netlify function <code>update-price</code> yang mem-validasi <code>x-admin-key</code> dan menulis file ke storage atau commit ke repo via GitHub token.<br>
+              • Error JSON parse biasanya disebabkan oleh body kosong (404 HTML) — lihat Network tab untuk path yang 404.
+            </div>
+          </div>
+
+          <div style="width:320px">
+            <strong>Quick actions</strong>
+            <div style="margin-top:8px" class="small muted">
+              • Upload file JSON → preview → Update. <br>
+              • Atau paste JSON yang berformat {"prices":{...},"lastUpdated":"ISO","source":"..."}.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-gap"></div>
+      <div class="hint">NOTE: Ini panel client-side. Pastikan fungsi server-side untuk menulis file (Netlify function / server endpoint) sudah tersedia dan environment variable <code>ADMIN_KEY</code> disimpan aman di hosting provider.</div>
+    </div>
+
+    <footer class="note">© <span id="yr"></span> Solusi Emas — Admin panel</footer>
+  </div>
+
+  <script>
+  (function(){
+    // --- CONFIG ---
+    const KARAT_ORDER = ['24','23','22','21','20','19','18','17','16','15','14','13','12','11','10','9','8','7','6'];
+    const INPUTS_GRID = document.getElementById('inputsGrid');
+    const PREVIEW_TILES = document.getElementById('previewTiles');
+    const JSON_PREVIEW = document.getElementById('jsonPreview');
+    const STATUS = document.getElementById('status');
+    const LOADED_AT = document.getElementById('loadedAt');
+    const FILE_INPUT = document.getElementById('fileInput');
+
+    const PRICE_JSON_REL = '../data/price.json';
+    const PRICE_JSON_ROOT = '/data/price.json';
+    const FUNC_PRICE = '/.netlify/functions/get-price';
+    const UPDATE_FUNC = '/.netlify/functions/update-price';
+
+    // DOM
+    const adminKeyEl = document.getElementById('adminKey');
+    const sourceEl = document.getElementById('source');
+    const loadModeEl = document.getElementById('loadMode');
+
+    // util
+    function el(id){ return document.getElementById(id); }
+    function setStatus(ok, html){
+      STATUS.style.display='block';
+      STATUS.className = 'status ' + (ok ? 'ok' : 'err');
+      STATUS.innerHTML = html;
+      // auto-hide success after delay
+      if(ok) setTimeout(()=>{ if(STATUS.classList.contains('ok')) STATUS.style.display='none'; }, 5200);
+    }
+    function clearStatus(){ STATUS.style.display='none'; STATUS.innerHTML=''; }
+
+    function formatIDR(n){
+      const N = Number(n || 0);
+      if(!isFinite(N)) return '-';
+      return 'Rp ' + N.toLocaleString('id-ID');
+    }
+
+    // build inputs
+    function renderInputs(){
+      INPUTS_GRID.innerHTML = '';
+      KARAT_ORDER.forEach(k => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'input-tile';
+        wrapper.innerHTML = `
+          <h4>K${k}</h4>
+          <input id="k${k}" type="number" min="0" step="1" placeholder="0" />
+        `;
+        INPUTS_GRID.appendChild(wrapper);
+      });
+    }
+
+    // fetch JSON with robust handling
+    async function tryFetch(url){
+      try {
+        const r = await fetch(url, { cache: 'no-store' });
+        if(!r.ok) return null;
+        const txt = await r.text();
+        if(!txt || txt.trim().length===0) return null;
+        try { return JSON.parse(txt); } catch(e){ console.warn('parse fail', url, e); return null; }
+      } catch(e){ return null; }
+    }
+
+    async function loadCurrent(){
+      clearStatus();
+      JSON_PREVIEW.style.display='none';
+      LOADED_AT.textContent = '-';
+      const mode = loadModeEl.value;
+      let data = null;
+
+      if(mode === 'file' || mode === 'auto') data = await tryFetch(PRICE_JSON_REL);
+      if(!data && (mode === 'auto' || mode === 'root')) data = await tryFetch(PRICE_JSON_ROOT);
+      if(!data && (mode === 'auto' || mode === 'func')) data = await tryFetch(FUNC_PRICE);
+
+      if(!data){
+        // try localstorage fallback
+        try {
+          const c = JSON.parse(localStorage.getItem('solusiemas_price') || 'null');
+          if(c) data = c;
+        } catch(e){}
+      }
+
+      if(!data){
+        setStatus(false, 'Gagal memuat price.json — periksa path atau functions. Jika file ada, pastikan publish root berisi /data/price.json.');
+        return;
+      }
+
+      fillFields(data);
+      setStatus(true, 'Berhasil memuat data price.json (lihat preview).');
+    }
+
+    function fillFields(data){
+      const prices = (data && data.prices) ? data.prices : {};
+      KARAT_ORDER.forEach(k => {
+        const el = document.getElementById('k'+k);
+        if(el) el.value = (prices[k] !== undefined) ? prices[k] : '';
+      });
+      sourceEl.value = data.source || 'manual';
+      LOADED_AT.textContent = data.lastUpdated ? new Date(data.lastUpdated).toLocaleString() : '-';
+      renderPreviewTiles(prices);
+      // cache
+      try { localStorage.setItem('solusiemas_price', JSON.stringify(data)); } catch(e){}
+    }
+
+    function renderPreviewTiles(prices){
+      PREVIEW_TILES.innerHTML = '';
+      KARAT_ORDER.forEach(k => {
+        const v = prices && prices[k] ? prices[k] : 0;
+        const t = document.createElement('div');
+        t.className = 'tile';
+        t.innerHTML = `<h5>K${k}</h5><p>${formatIDR(v)}</p>`;
+        PREVIEW_TILES.appendChild(t);
+      });
+    }
+
+    function buildPayload(){
+      const prices = {};
+      KARAT_ORDER.forEach(k => {
+        const iv = document.getElementById('k'+k);
+        const v = iv && iv.value ? Number(iv.value) : 0;
+        prices[k] = isNaN(v) ? 0 : v;
+      });
+      const payload = {
+        prices,
+        lastUpdated: new Date().toISOString(),
+        source: (sourceEl.value || 'manual')
+      };
+      return payload;
+    }
+
+    function showJsonPreview(payload){
+      JSON_PREVIEW.style.display = 'block';
+      JSON_PREVIEW.textContent = JSON.stringify(payload, null, 2);
+      JSON_PREVIEW.scrollTop = 0;
+    }
+
+    async function updatePrice(){
+      clearStatus();
+      const key = (adminKeyEl.value || '').trim();
+      if(!key){ alert('Masukkan ADMIN KEY di field atas sebelum Update.'); return; }
+
+      const payload = buildPayload();
+      showJsonPreview(payload);
+      if(!confirm('Kirim update ke server? Pastikan ADMIN KEY benar dan endpoint tersedia.')) return;
+
+      try {
+        const res = await fetch(UPDATE_FUNC, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-key': key
+          },
+          body: JSON.stringify(payload)
+        });
+        const text = await res.text();
+        let json = null;
+        try { json = JSON.parse(text); } catch(e) { json = text; }
+
+        if(res.ok){
+          setStatus(true, 'Update berhasil. Server response: <pre class="smalljson">'+(typeof json === 'string' ? json : JSON.stringify(json, null, 2))+'</pre>');
+          fillFields(payload); // optimistic update
+        } else {
+          setStatus(false, 'Update gagal (HTTP '+res.status+'). Response: <pre class="smalljson">'+(typeof json === 'string' ? json : JSON.stringify(json, null, 2))+'</pre>');
+        }
+      } catch(e){
+        setStatus(false, 'Request failed: ' + (e && e.message ? e.message : e));
+      }
+    }
+
+    function downloadJson(){
+      const payload = buildPayload();
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'price.json'; document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function resetFields(){
+      KARAT_ORDER.forEach(k => {
+        const el = document.getElementById('k'+k);
+        if(el) el.value = '';
+      });
+      sourceEl.value = 'manual';
+      JSON_PREVIEW.style.display='none';
+      clearStatus();
+      renderPreviewTiles({});
+      LOADED_AT.textContent = '-';
+    }
+
+    function importFromText(txt){
+      try {
+        const obj = JSON.parse(txt);
+        if(!obj || !obj.prices) { alert('JSON tidak valid: harus berisi field "prices".'); return; }
+        fillFields(obj);
+        showJsonPreview(obj);
+        setStatus(true, 'Import sukses — fields telah terisi.');
+      } catch(e){
+        alert('JSON parse error: ' + (e && e.message ? e.message : e));
+      }
+    }
+
+    function bindUI(){
+      document.getElementById('btnLoad').addEventListener('click', loadCurrent);
+      document.getElementById('btnReset').addEventListener('click', resetFields);
+      document.getElementById('btnPreview').addEventListener('click', () => {
+        const payload = buildPayload();
+        showJsonPreview(payload);
+      });
+      document.getElementById('btnUpdate').addEventListener('click', updatePrice);
+      document.getElementById('btnDownload').addEventListener('click', downloadJson);
+      document.getElementById('btnClearCache').addEventListener('click', () => {
+        localStorage.removeItem('solusiemas_price');
+        alert('Local cache cleared.');
+      });
+      document.getElementById('btnImport').addEventListener('click', () => FILE_INPUT.click());
+      FILE_INPUT.addEventListener('change', (ev) => {
+        const f = ev.target.files && ev.target.files[0];
+        if(!f) return;
+        const reader = new FileReader();
+        reader.onload = e => importFromText(e.target.result);
+        reader.readAsText(f);
+      });
+      document.getElementById('btnPaste').addEventListener('click', async () => {
+        try {
+          const txt = await navigator.clipboard.readText();
+          if(!txt) { alert('Clipboard kosong. Salin JSON terlebih dahulu.'); return; }
+          importFromText(txt);
+        } catch(e){
+          alert('Gagal membaca clipboard: ' + (e && e.message ? e.message : e));
+        }
+      });
+    }
+
+    // init
+    function init(){
+      renderInputs();
+      bindUI();
+      // preload cache if any
+      try {
+        const cached = JSON.parse(localStorage.getItem('solusiemas_price') || 'null');
+        if(cached) fillFields(cached);
+      } catch(e){}
+      // set year
+      document.getElementById('yr').textContent = new Date().getFullYear();
+    }
+
+    // run
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+
+  })();
+  </script>
+</body>
+</html>
