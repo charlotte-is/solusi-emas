@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Harga Emas — Solusi Emas</title>
+  <meta name="description" content="Daftar harga emas per gram — Solusi Emas" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--gold:#cfa93b;--muted:#cfcfcf}
+    html,body{height:100%;margin:0;font-family:Montserrat,Arial;color:#fff;background:linear-gradient(135deg,#07070a,#141214)}
+    .wrap{max-width:980px;margin:24px auto;padding:20px}
+    header{display:flex;align-items:center;gap:12px}
+    .logo{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,#07122a,#0b2745);display:flex;align-items:center;justify-content:center}
+    .logo img{width:40px;height:40px}
+    h1{font-family:'Playfair Display',serif;color:var(--gold);margin:0}
+    .sub{color:var(--muted);margin-top:6px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);margin-top:16px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:12px;border-bottom:1px solid rgba(255,255,255,0.04);text-align:left}
+    th{color:var(--gold);font-weight:700}
+    td{color:#dcdcdc}
+    .muted{color:var(--muted)}
+    .right{ text-align:right }
+    .lastUpdated{margin-top:8px;color:var(--muted)}
+    .btn{background:var(--gold);color:#071226;padding:8px 12px;border-radius:8px;border:none;font-weight:700;cursor:pointer}
+    @media (max-width:640px){ th,td{padding:10px;font-size:14px} }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo"><img src="/assets/logo.png" alt="logo"></div>
+      <div>
+        <h1>Harga Emas</h1>
+        <div class="sub">Harga beli per gram — Solusi Emas</div>
+      </div>
+    </header>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+        <div>
+          <strong>Daftar Harga</strong>
+          <div class="lastUpdated muted" id="lastUpdated">Memuat...</div>
+        </div>
+        <div>
+          <button id="btnRefresh" class="btn">Refresh</button>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;overflow:auto">
+        <table aria-live="polite" id="priceTable">
+          <thead>
+            <tr><th>Kadar</th><th>Harga / gram</th><th class="right">Keterangan</th></tr>
+          </thead>
+          <tbody>
+            <!-- injected -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const PRICE_JSON_REL = '/data/price.json';
+      const FUNC_PRICE = '/.netlify/functions/get-price';
+      const KARAT_ORDER = ['24','23','22','21','20','19','18','17','16','15','14','13','12','11','10','9','8','7','6'];
+      const lastUpdatedEl = document.getElementById('lastUpdated');
+      const priceTable = document.getElementById('priceTable').querySelector('tbody');
+      const btnRefresh = document.getElementById('btnRefresh');
+
+      function formatIDR(n){
+        if(typeof n !== 'number' || !isFinite(n)) return '-';
+        return 'Rp ' + n.toLocaleString('id-ID');
+      }
+
+      async function tryFetch(url){
+        try {
+          const r = await fetch(url, { cache: 'no-store' });
+          if(!r.ok) return null;
+          const txt = await r.text();
+          if(!txt || txt.trim().length === 0) return null;
+          return JSON.parse(txt);
+        } catch(e){ return null; }
+      }
+
+      async function load(){
+        priceTable.innerHTML = '<tr><td colspan="3" class="muted">Memuat...</td></tr>';
+        let data = await tryFetch(PRICE_JSON_REL);
+        if(!data) data = await tryFetch(FUNC_PRICE);
+        if(!data){
+          priceTable.innerHTML = '<tr><td colspan="3" style="color:#f88">Gagal memuat harga. Periksa data/price.json atau functions.</td></tr>';
+          lastUpdatedEl.textContent = '-';
+          return;
+        }
+        priceTable.innerHTML = '';
+        KARAT_ORDER.forEach(k => {
+          const val = data.prices && data.prices[k] ? data.prices[k] : 0;
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>K${k}</td><td>${formatIDR(val)}</td><td class="right muted">Update: ${data.lastUpdated ? new Date(data.lastUpdated).toLocaleString() : '-'}</td>`;
+          priceTable.appendChild(tr);
+        });
+        lastUpdatedEl.textContent = data.lastUpdated ? new Date(data.lastUpdated).toLocaleString() : '-';
+      }
+
+      btnRefresh.addEventListener('click', load);
+      load();
+    })();
+  </script>
+</body>
+</html>

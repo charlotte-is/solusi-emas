@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Solusi Emas — Premium Valuation for Your Gold</title>
+  <meta name="description" content="Layanan penilaian premium untuk semua kondisi emas. Penilaian transparan dan layanan personal." />
+  <meta name="color-scheme" content="dark light">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================
+       THEME & BASE
+       ========================== */
+    :root{
+      --gold: #cfa93b;
+      --gold-2:#e0b74b;
+      --bg-1: #050507;
+      --bg-2: #141214;
+      --muted: #cfcfcf;
+      --glass: rgba(255,255,255,0.03);
+      --navy: #071226;
+      --max-w: 1180px;
+      --card-radius: 14px;
+      --ease: cubic-bezier(.2,.9,.3,1);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background: linear-gradient(135deg,var(--bg-1),var(--bg-2));color:#fff;font-family: 'Montserrat', system-ui, -apple-system, "Segoe UI", Roboto, Arial; -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+    img { display:block; max-width:100%; height:auto; }
+    a { color:var(--gold); text-decoration:none; }
+    .container { max-width:var(--max-w); margin:0 auto; padding:0 20px; }
+
+    /* ==========================
+       HEADER / NAV
+       ========================== */
+    header{position:fixed;inset:0 0 auto 0;z-index:120;background:linear-gradient(180deg, rgba(6,8,10,0.6), rgba(6,8,10,0.06));backdrop-filter: blur(6px);}
+    .topbar{height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;max-width:var(--max-w);margin:0 auto}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,#081633,#0b2745);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(0,0,0,0.45)}
+    .logo img{width:40px;height:40px;object-fit:contain}
+    .brand .title{font-weight:700;color:var(--gold);letter-spacing:.2px}
+    nav.main-nav{display:flex;gap:18px;align-items:center}
+    nav.main-nav a{color: #f6d98a;font-weight:600;padding:6px 8px;border-radius:8px;transition:background .18s var(--ease);font-size:15px}
+    nav.main-nav a:hover{background:rgba(255,255,255,0.02)}
+    .mobile-toggle{display:none}
+
+    /* ==========================
+       HERO (video template + poster fallback)
+       ========================== */
+    main{padding-top:92px}
+    .hero {
+      position:relative;
+      min-height:78vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      border-bottom:1px solid rgba(255,255,255,0.02);
+    }
+    .hero::before{
+      content:"";
+      position:absolute;inset:0;background:linear-gradient(0deg, rgba(0,0,0,0.28), rgba(0,0,0,0.02));
+      z-index:1;
+      pointer-events:none;
+    }
+    .hero video{
+      position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:0;transition:opacity .9s ease;
+      -webkit-mask-image: linear-gradient(transparent, #000 6%);
+    }
+    .hero .overlay{position:absolute;inset:0;background:linear-gradient(180deg, rgba(4,6,7,0.38), rgba(4,6,7,0.68));z-index:2}
+    .hero-inner{position:relative;z-index:3;max-width:980px;text-align:center;padding:48px 18px}
+    .hero h1{font-family:'Playfair Display', serif;font-size:clamp(32px,6.8vw,64px);margin:0 0 12px;color:var(--gold);line-height:1.02;letter-spacing: -0.6px}
+    .hero p{margin:0 0 20px;color: #eaeaea;font-size:1.05rem;max-width:900px;margin-left:auto;margin-right:auto}
+    .hero .ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .btn{background:var(--gold);color:#071226;padding:.9rem 1.6rem;border-radius:999px;font-weight:700;text-decoration:none;box-shadow:0 18px 60px rgba(207,169,59,0.08);transition:transform .18s var(--ease), box-shadow .18s var(--ease)}
+    .btn:hover{transform:translateY(-5px);box-shadow:0 28px 90px rgba(207,169,59,0.12)}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:.8rem 1.4rem}
+
+    .hero-hint{margin-top:16px;color:var(--muted);font-size:.95rem}
+
+    /* ==========================
+       PRICE STRIP
+       ========================== */
+    .price-strip{background: linear-gradient(90deg, rgba(7,17,34,0.9), rgba(6,8,15,0.95));padding:12px 0;border-top:1px solid rgba(255,255,255,0.02)}
+    .price-wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .price-left{font-weight:700;color:#fff}
+    .price-right{color:var(--muted)}
+
+    .prices-grid{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+    .price-card{
+      --shadow: 0 8px 28px rgba(0,0,0,0.5);
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;padding:14px 18px;min-width:130px;text-align:center;border:1px solid rgba(255,255,255,0.03);
+      box-shadow:var(--shadow);transition:transform .36s var(--ease),box-shadow .36s var(--ease),border-color .36s var(--ease);
+      transform-origin:center;
+    }
+    .price-card:hover{transform:translateY(-10px);box-shadow:0 30px 90px rgba(0,0,0,0.6);border-color:rgba(207,169,59,0.28)}
+    .price-card h4{margin:0;color:var(--gold);font-size:1.06rem}
+    .price-card .value{margin-top:8px;font-weight:800;font-size:1.06rem;color:#fff}
+
+    .small-muted{font-size:12px;color:var(--muted)}
+
+    /* ==========================
+       FEATURES (card hover rich)
+       ========================== */
+    .section{padding:72px 0}
+    .center{text-align:center}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:28px}
+    .feature{
+      position:relative;border-radius:var(--card-radius);overflow:visible;padding:26px;background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03);transition:transform .4s var(--ease),box-shadow .4s var(--ease);cursor:default;
+      box-shadow:0 10px 36px rgba(0,0,0,0.45);
+    }
+    .feature:hover{transform:translateY(-12px) scale(1.01);box-shadow:0 36px 120px rgba(0,0,0,0.65);border-color:rgba(207,169,59,0.2)}
+    .feature .feat-title{color:var(--gold);font-weight:700;margin-bottom:8px}
+    .feature p{color:var(--muted);margin:0}
+    .feature .accent{position:absolute;right:-30px;top:-20px;width:120px;height:120px;border-radius:50%;background:linear-gradient(120deg, rgba(207,169,59,0.08), rgba(207,169,59,0.02));filter:blur(14px);pointer-events:none;opacity:.75}
+    .feat-icon{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--navy),#081631);display:flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 12px 40px rgba(0,0,0,0.5)}
+
+    /* ==========================
+       WHY / IMAGE + bullets
+       ========================== */
+    .why{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+    .why .why-img{width:420px;border-radius:12px;overflow:hidden;box-shadow:0 20px 72px rgba(0,0,0,0.6)}
+    .why ul{color:var(--muted);margin-top:12px;line-height:1.6}
+
+    /* ==========================
+       TESTIMONIALS (grid, not horizontal)
+       ========================== */
+    .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:18px}
+    .testi-card{padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);box-shadow:0 10px 36px rgba(0,0,0,0.45);min-height:84px;display:flex;flex-direction:column;justify-content:center}
+    .testi-card strong{display:block;margin-bottom:6px;color:var(--gold)}
+    /* for very wide screens, limit width to keep readablity */
+    .testimonials-container{max-width:1100px;margin:0 auto}
+
+    /* ==========================
+       FAQ / GALLERY
+       ========================== */
+    .faq{display:grid;grid-template-columns:1fr 420px;gap:24px;align-items:start}
+    .faq-item{background:#0c0c0c;padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .acc-trigger{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer}
+    .acc-panel{max-height:0;overflow:hidden;transition:max-height .36s var(--ease), padding .36s var(--ease)}
+    .acc-open .acc-panel{padding-top:12px;padding-bottom:6px}
+
+    /* gallery: slightly bigger images */
+    .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px}
+    .gallery-grid img{width:100%;height:220px;object-fit:cover;border-radius:10px;cursor:pointer;transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+    .gallery-grid img:hover{transform:translateY(-6px);box-shadow:0 26px 70px rgba(0,0,0,0.6)}
+
+    /* ==========================
+       LIGHTBOX
+       ========================== */
+    #lightbox{display:none;position:fixed;inset:0;z-index:2000;align-items:center;justify-content:center;background:rgba(0,0,0,0.92)}
+    #lbInner{max-width:920px;max-height:86vh;display:flex;flex-direction:column;align-items:center}
+    #lbImg{max-width:100%;max-height:76vh;border-radius:10px;box-shadow:0 22px 120px rgba(0,0,0,0.7)}
+    .lb-row{display:flex;gap:8px;margin-top:12px}
+    .lb-btn{background:#111;border:1px solid rgba(255,255,255,0.04);color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
+
+    /* ==========================
+       FOOTER
+       ========================== */
+    footer{padding:28px 0;background:#020202;color:var(--muted);border-top:1px solid rgba(255,255,255,0.02)}
+    footer .footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+
+    /* ==========================
+       RESPONSIVE
+       ========================== */
+    @media (max-width:1000px){
+      .grid-3{grid-template-columns:repeat(2,1fr)}
+      .gallery-grid{grid-template-columns:repeat(2,1fr)}
+      .faq{grid-template-columns:1fr}
+      nav.main-nav a{display:none}
+      .why .why-img{width:320px}
+      .testi-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:640px){
+      .grid-3{grid-template-columns:1fr}
+      .testi-grid{grid-template-columns:1fr}
+      .testi-card{min-height:unset}
+      .hero h1{font-size:32px}
+      .hero-inner{padding:28px}
+      .topbar{padding:0 12px}
+      .hero{min-height:62vh}
+      .hero p{font-size:0.98rem}
+      .gallery-grid{grid-template-columns:1fr}
+    }
+    @media (prefers-reduced-motion: reduce){
+      *{transition:none!important;animation:none!important}
+      .hero video{opacity:0 !important; display:none !important}
+    }
+
+    /* small helpers */
+    .hidden{display:none}
+    .fade-in{opacity:0;transform:translateY(12px);transition:opacity .6s ease,transform .6s ease}
+    .fade-in.visible{opacity:1;transform:none}
+    a:focus, button:focus { outline: 3px solid rgba(207,169,59,0.16); outline-offset:3px; border-radius:8px }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"><img src="assets/logo.png" alt="Solusi Emas Logo" /></div>
+        <div>
+          <div class="title">Solusi Emas</div>
+          <div style="font-size:12px;color:var(--muted)">Apapun kondisinya — Solusi Emas jawabannya</div>
+        </div>
+      </div>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="index.html" aria-current="page">Home</a>
+        <a href="harga.html">Harga</a>
+        <a href="about.html">About</a>
+        <a href="hubungi.html">Hubungi</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="hero" style="background-image:url('assets/hero-poster.jpg');background-position:center;background-size:cover;">
+      <video id="heroVideo" playsinline muted loop preload="metadata" poster="assets/hero-poster.heic" aria-hidden="true">
+        <source src="admin/assets/videos/hero.webm" type="video/webm">
+        <source src="admin/assets/videos/hero.mp4" type="video/mp4">
+      </video>
+      <div class="overlay" aria-hidden="true"></div>
+
+      <div class="hero-inner">
+        <h1 id="headline">Premium Valuation for Your Gold</h1>
+        <p id="subhead">Layanan penilaian premium untuk semua kondisi emas — hasil transparan, layanan personal. Proses cepat, aman, tanpa biaya tersembunyi.</p>
+
+        <div class="ctas">
+          <a class="btn" id="cta-sell" href="hubungi.html" role="button">Jual Sekarang</a>
+          <a class="btn ghost" id="cta-chat" href="#" role="button" target="_blank" rel="noopener">Chat via WhatsApp</a>
+        </div>
+
+        <div class="hero-hint">Harga final ditentukan setelah pengecekan fisik — namun kami perlihatkan harga beli per gram berdasarkan kadar di bawah.</div>
+      </div>
+    </section>
+
+    <!-- PRICE STRIP -->
+    <section class="price-strip" aria-labelledby="price-heading">
+      <div class="container">
+        <div class="price-wrap">
+          <div class="price-left">Harga Emas / gram</div>
+          <div class="price-right"><span id="lastUpdated">Memuat...</span></div>
+        </div>
+
+        <div class="prices-grid" id="pricesGrid" aria-live="polite" style="margin-top:12px">
+          <!-- INJECTED -->
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" aria-labelledby="advantages-heading">
+      <div class="container center">
+        <h2 id="advantages-heading" style="color:var(--gold)">Keunggulan Solusi Emas</h2>
+        <p style="color:#d9d9d9;max-width:760px;margin:6px auto 18px">Kami menekankan profesionalisme, transparansi, dan kecepatan — setiap langkah dapat Anda lihat.</p>
+
+        <div class="grid-3 fade-in" id="featGrid">
+          <div class="feature">
+            <div class="feat-icon" aria-hidden="true">🔍</div>
+            <div class="feat-title">Proses Transparan</div>
+            <p>Pengecekan dilakukan di depan Anda: uji kadar & timbang — semua dijelaskan langkah demi langkah.</p>
+            <div class="accent" aria-hidden="true"></div>
+          </div>
+
+          <div class="feature">
+            <div class="feat-icon" aria-hidden="true">⚡</div>
+            <div class="feat-title">Proses Cepat</div>
+            <p>Estimasi instan, negosiasi cepat, dan pembayaran setelah konfirmasi — tanpa antri lama.</p>
+            <div class="accent" aria-hidden="true"></div>
+          </div>
+
+          <div class="feature">
+            <div class="feat-icon" aria-hidden="true">🔒</div>
+            <div class="feat-title">Aman & Terpercaya</div>
+            <p>Dokumentasi foto & bukti timbangan disediakan; transaksi tercatat untuk keamanan Anda.</p>
+            <div class="accent" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY -->
+    <section class="section" aria-labelledby="why-heading">
+      <div class="container why">
+        <div style="flex:1;min-width:260px">
+          <h2 id="why-heading" style="color:var(--gold)">Mengapa Memilih Solusi Emas?</h2>
+          <p style="color:#d9d9d9">Pendekatan kami menggabungkan harga kompetitif, layanan personal serta bukti proses yang jelas — membuat penjualan emas menjadi nyaman dan aman.</p>
+          <ul>
+            <li>Penilaian langsung di depan pelanggan</li>
+            <li>Harga ter-update setiap hari (lihat strip harga)</li>
+            <li>Tanpa biaya tersembunyi, pembayaran instan</li>
+            <li>Dokumentasi lengkap & bukti timbangan</li>
+          </ul>
+        </div>
+        <div class="why-img">
+          <img src="assets/images/office-hero.heic" alt="Toko Solusi Emas" />
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS (GRID, not horizontal carousel) -->
+    <section class="section" aria-labelledby="testi-heading">
+      <div class="container testimonials-container">
+        <h2 id="testi-heading" style="color:var(--gold);text-align:center">Testimoni Pelanggan</h2>
+        <p style="color:#d9d9d9;text-align:center">Ulasan asli dari pelanggan yang telah menggunakan layanan kami.</p>
+
+        <div class="testi-grid fade-in" id="testiGrid" style="margin-top:18px">
+          <div class="testi-card">
+            <strong>R. Hartono</strong>
+            <p style="color:var(--muted)">"Proses sangat transparan, timnya jujur. Pembayaran cepat — saya puas."</p>
+          </div>
+
+          <div class="testi-card">
+            <strong>S. Wulandari</strong>
+            <p style="color:var(--muted)">"Harga cocok dan proses jelas sampai pembayaran. Rekomendasi!"</p>
+          </div>
+
+          <div class="testi-card">
+            <strong>M. Rizal</strong>
+            <p style="color:var(--muted)">"Layanan rapi dan profesional, bukti foto & timbangan lengkap."</p>
+          </div>
+
+          <!-- Additional testimonials - will wrap into next row if present -->
+          <div class="testi-card">
+            <strong>N. Prasetyo</strong>
+            <p style="color:var(--muted)">"Sangat membantu, aman, dan prosesnya cepat."</p>
+          </div>
+
+          <div class="testi-card">
+            <strong>S. Anggraeni</strong>
+            <p style="color:var(--muted)">"Transaksi jelas dan transparan, recommended."</p>
+          </div>
+
+          <div class="testi-card">
+            <strong>F. Santoso</strong>
+            <p style="color:var(--muted)">"Pelayanan ramah, harga pantas, cepat cair."</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ & GALLERY -->
+    <section class="section" aria-labelledby="faq-heading">
+      <div class="container" style="max-width:var(--max-w);">
+        <div style="display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap">
+          <div style="flex:1;min-width:320px">
+            <h3 id="faq-heading" style="color:var(--gold)">FAQ — Pertanyaan Umum</h3>
+
+            <div class="faq" style="margin-top:12px">
+              <div>
+                <div class="faq-item">
+                  <div class="acc-trigger" role="button" tabindex="0" aria-expanded="false">
+                    <div><strong>Apa yang perlu dibawa saat menjual emas?</strong></div>
+                    <div class="small-muted">Klik untuk lihat</div>
+                  </div>
+                  <div class="acc-panel">
+                    <p class="muted">Bawa identitas (KTP) dan jika ada sertifikat atau nota — bukan syarat mutlak tapi mempercepat proses.</p>
+                  </div>
+                </div>
+
+                <div class="faq-item">
+                  <div class="acc-trigger" role="button" tabindex="0" aria-expanded="false">
+                    <div><strong>Apakah ada potongan untuk emas rusak?</strong></div>
+                    <div class="small-muted">Klik untuk lihat</div>
+                  </div>
+                  <div class="acc-panel">
+                    <p class="muted">Untuk kondisi rusak/patah biasanya ada potongan kecil yang bergantung pada kadar & berat. Semua akan dijelaskan saat pengecekan.</p>
+                  </div>
+                </div>
+
+                <div class="faq-item">
+                  <div class="acc-trigger" role="button" tabindex="0" aria-expanded="false">
+                    <div><strong>Berapa lama proses pembayaran?</strong></div>
+                    <div class="small-muted">Klik untuk lihat</div>
+                  </div>
+                  <div class="acc-panel">
+                    <p class="muted">Pembayaran instan (tunai atau transfer) setelah penjual menerima penawaran.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- gallery aside -->
+              <aside style="width:420px">
+                <h4 style="color:var(--gold);margin-top:0">Galeri Proses</h4>
+                <div class="gallery-grid" id="galleryGrid">
+                  <img data-src="assets/images/proses.heic" alt="Penimbangan" data-caption="Proses penimbangan & dokumentasi" loading="lazy">
+                  <img data-src="assets/images/testi.png" alt="Konsul" data-caption="Konsultasi Harga" loading="lazy">
+                  <img data-src="assets/images/trx-done.heic" alt="Transaksi" data-caption="Transaksi selesai & pembayaran" loading="lazy">
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section center" aria-labelledby="cta2">
+      <div class="container">
+        <h3 id="cta2" style="color:var(--gold)">Siap Menjual Emas Anda?</h3>
+        <p style="color:var(--muted)">Hubungi kami sekarang untuk penilaian profesional & penawaran terbaik.</p>
+        <div style="margin-top:14px">
+          <a class="btn" href="hubungi.html">Hubungi Sekarang</a>
+          <a class="btn ghost" href="#" id="ctaChatBottom" target="_blank" rel="noopener">Chat via WhatsApp</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="container footer-inner">
+        <div>
+          <div style="font-weight:700;color:var(--gold)">Solusi Emas</div>
+          <div style="font-size:13px;color:var(--muted)">Jl. Fatahillah No.33, Setu Kulon, Weru, Cirebon, Jawa Barat 45154</div>
+          <div style="font-size:13px;color:var(--muted)">WA: +62 877-5838-7905 &nbsp; | &nbsp; IG: @solusiemas.ind</div>
+        </div>
+        <div style="text-align:right;color:var(--muted);font-size:13px">© <span id="year"></span> Solusi Emas</div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" aria-hidden="true">
+    <div id="lbInner" role="dialog" aria-modal="true">
+      <button id="lbClose" class="lb-btn" aria-label="Tutup">×</button>
+      <img id="lbImg" src="" alt="">
+      <div id="lbCaption" style="color:#ddd;margin-top:8px"></div>
+      <div class="lb-row">
+        <button id="lbPrev" class="lb-btn">← Sebelumnya</button>
+        <button id="lbNext" class="lb-btn">Berikutnya →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script>
+    (function(){
+      /* CONFIG */
+      const PRICE_JSON = 'data/price.json';
+      const WA_NUMBER = '087758387905';
+      const KARAT_ORDER = ['24','22','20','18','14','10','6'];
+      const PRICE_REFRESH_MS = 5 * 60 * 1000;
+
+      /* HELPERS */
+      function $(sel, ctx=document) { return ctx.querySelector(sel); }
+      function $$(sel, ctx=document) { return Array.from(ctx.querySelectorAll(sel)); }
+      function formatIDR(n){ if(typeof n !== 'number' || !isFinite(n)) return '-'; return 'Rp ' + n.toLocaleString('id-ID'); }
+      function toNumber(v){ const n = Number(v); return isNaN(n) ? 0 : n; }
+      function normalizeWA(num){ num = (num||'').trim(); if(num.startsWith('0')) num = '62' + num.slice(1); if(num.startsWith('+')) num = num.slice(1); return num; }
+
+      /* HERO */
+      const heroVideo = $('#heroVideo');
+      function initHero(){
+        if(!heroVideo) return;
+        const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if(isMobile || reduce){ heroVideo.style.display = 'none'; return; }
+        heroVideo.addEventListener('canplay', () => heroVideo.style.opacity = '1');
+        heroVideo.play().catch(()=> { heroVideo.style.display = 'none'; });
+      }
+
+      /* PRICE */
+      const pricesGrid = $('#pricesGrid');
+      const lastUpdatedEl = $('#lastUpdated');
+
+      async function fetchPriceJson(){
+        try {
+          const res = await fetch(PRICE_JSON, { cache: 'no-store' });
+          if(!res.ok) throw new Error('no json');
+          return await res.json();
+        } catch(err){ return null; }
+      }
+
+      function renderPrices(data){
+        pricesGrid.innerHTML = '';
+        if(!data || !data.prices){
+          lastUpdatedEl.textContent = 'Belum ada data harga';
+          pricesGrid.innerHTML = '<div style="color:#f88">Tidak ada data harga. Periksa data/price.json</div>';
+          return;
+        }
+        const prev = (window.__PRICE_CACHE__ && window.__PRICE_CACHE__.prices) ? window.__PRICE_CACHE__.prices : {};
+        KARAT_ORDER.forEach(k => {
+          const value = toNumber(data.prices[k]);
+          const prevVal = toNumber(prev[k] || value);
+          const card = document.createElement('div');
+          card.className = 'price-card fade-in';
+          card.innerHTML = `<h4>K${k}</h4><div class="value">${formatIDR(prevVal)}</div><div class="small-muted" style="margin-top:8px">Kadar ${k}K</div>`;
+          pricesGrid.appendChild(card);
+          animateNumber(card.querySelector('.value'), prevVal, value, 650);
+        });
+
+        lastUpdatedEl.textContent = data.lastUpdated ? ('Terakhir: ' + new Date(data.lastUpdated).toLocaleString()) : 'Terakhir: -';
+        window.__PRICE_CACHE__ = data;
+        try{ localStorage.setItem('solusiemas_price', JSON.stringify(data)); } catch(e){}
+      }
+
+      function animateNumber(el, from, to, duration){
+        from = Number(from || 0); to = Number(to || 0);
+        if(from === to){ el.textContent = formatIDR(to); return; }
+        const start = performance.now();
+        function step(now){
+          const t = Math.min(1, (now - start) / duration);
+          const val = Math.round(from + (to - from) * t);
+          el.textContent = formatIDR(val);
+          if(t < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+
+      async function initPrices(){
+        const cached = (function(){ try{ return JSON.parse(localStorage.getItem('solusiemas_price')); } catch(e){ return null } })();
+        if(cached) renderPrices(cached);
+        const data = await fetchPriceJson();
+        if(data) renderPrices(data);
+        else if(!cached) pricesGrid.innerHTML = '<div style="color:#f88">Gagal memuat harga. Periksa data/price.json.</div>';
+      }
+
+      /* REVEAL */
+      function initReveal(){
+        const io = new IntersectionObserver(entries => {
+          entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.12 });
+        $$('.fade-in').forEach(el => io.observe(el));
+      }
+
+      /* FAQ accordion */
+      function initFAQ(){
+        $$('.faq-item .acc-trigger').forEach(trigger => {
+          const item = trigger.parentElement;
+          const panel = item.querySelector('.acc-panel');
+          function toggle(){
+            const isOpen = item.classList.toggle('acc-open');
+            trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            if(isOpen) panel.style.maxHeight = panel.scrollHeight + 'px';
+            else panel.style.maxHeight = 0;
+          }
+          trigger.addEventListener('click', toggle);
+          trigger.addEventListener('keydown', (e) => { if(e.key==='Enter' || e.key===' ') { e.preventDefault(); toggle(); }});
+        });
+      }
+
+      /* GALLERY + LIGHTBOX */
+      function initGallery(){
+        const grid = $('#galleryGrid');
+        if(!grid) return;
+        grid.querySelectorAll('img[data-src]').forEach(img => { img.src = img.dataset.src; });
+        const images = Array.from(grid.querySelectorAll('img'));
+        const lightbox = $('#lightbox');
+        const lbImg = $('#lbImg');
+        const lbCaption = $('#lbCaption');
+        const lbClose = $('#lbClose');
+        const lbPrev = $('#lbPrev');
+        const lbNext = $('#lbNext');
+        let idx = -1;
+        function open(i){
+          idx = i;
+          lbImg.src = images[idx].src;
+          lbCaption.textContent = images[idx].dataset.caption || images[idx].alt || '';
+          lightbox.style.display = 'flex';
+          lightbox.setAttribute('aria-hidden', 'false');
+          document.body.style.overflow = 'hidden';
+        }
+        function close(){
+          lightbox.style.display = 'none';
+          lightbox.setAttribute('aria-hidden', 'true');
+          lbImg.src = '';
+          idx = -1;
+          document.body.style.overflow = '';
+        }
+        function prev(){ if(idx>0) open(idx-1); }
+        function next(){ if(idx < images.length-1) open(idx+1); }
+        images.forEach((img,i) => img.addEventListener('click', () => open(i)));
+        lbClose && lbClose.addEventListener('click', close);
+        lbPrev && lbPrev.addEventListener('click', prev);
+        lbNext && lbNext.addEventListener('click', next);
+        document.addEventListener('keydown', e => {
+          if(lightbox.style.display !== 'flex') return;
+          if(e.key === 'Escape') close();
+          if(e.key === 'ArrowLeft') prev();
+          if(e.key === 'ArrowRight') next();
+        });
+        lightbox.addEventListener('click', (e)=>{ if(e.target === lightbox) close(); });
+      }
+
+      /* WA links */
+      function initWA(){
+        const num = normalizeWA(WA_NUMBER);
+        const elIds = ['#cta-chat','#ctaChatBottom','#ctaChatBottom2','#cta-sell','#ctaChatBottom'];
+        elIds.forEach(sel => { const el = $(sel); if(el) { el.href = 'https://wa.me/' + num + '?text=' + encodeURIComponent('Halo Solusi Emas, saya ingin menanyakan estimasi emas hari ini.'); el.target='_blank'; }});
+      }
+
+      /* INIT */
+      function initAll(){
+        initHero();
+        initReveal();
+        initFAQ();
+        initGallery();
+        initWA();
+        initPrices();
+        setInterval(initPrices, PRICE_REFRESH_MS);
+        document.getElementById('year').textContent = new Date().getFullYear();
+      }
+
+      if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAll);
+      else initAll();
+
+      window.__solusiemas = { fetchPriceJson, renderPrices };
+
+    })();
+  </script>
+</body>
+</html>

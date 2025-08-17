@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hubungi — Solusi Emas</title>
+  <meta name="description" content="Hubungi Solusi Emas via WhatsApp atau kunjungi toko" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--gold:#cfa93b;--muted:#cfcfcf}
+    html,body{height:100%;margin:0;font-family:Montserrat,Arial;color:#fff;background:linear-gradient(135deg,#07070a,#141214)}
+    .wrap{max-width:980px;margin:28px auto;padding:20px}
+    h1{font-family:'Playfair Display',serif;color:var(--gold)}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    label{display:block;margin-bottom:6px;color:var(--muted)}
+    input,textarea{width:100%;padding:10px;border-radius:8px;background:#0a0a0b;border:1px solid rgba(255,255,255,0.03);color:#fff;margin-bottom:12px}
+    .btn{background:var(--gold);color:#071226;padding:10px 14px;border-radius:8px;border:none;font-weight:700;cursor:pointer}
+    .muted{color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Hubungi Kami</h1>
+    <div class="card">
+      <p class="muted">Ingin menanyakan estimasi? Isi form ini dan kami akan bantu melalui WhatsApp.</p>
+
+      <label for="name">Nama</label>
+      <input id="name" placeholder="Nama lengkap" />
+
+      <label for="phone">Nomor Telepon</label>
+      <input id="phone" placeholder="08xxxx" />
+
+      <label for="desc">Deskripsi singkat emas (jenis, berat, kondisi)</label>
+      <textarea id="desc" placeholder="Contoh: cincin 22K berat 3.2g, rusak"></textarea>
+
+      <div style="display:flex;gap:10px;align-items:center">
+        <button id="btnWa" class="btn">Chat via WhatsApp</button>
+        <div class="muted">Atau kunjungi toko: Jl. Fatahillah No.33, Weru, Cirebon</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const WA_NUMBER = '087758387905';
+      function buildWaLink(msg){
+        let num = WA_NUMBER.trim();
+        if(num.startsWith('0')) num = '62' + num.slice(1);
+        if(num.startsWith('+')) num = num.replace('+','');
+        return 'https://wa.me/' + num + '?text=' + encodeURIComponent(msg);
+      }
+      document.getElementById('btnWa').addEventListener('click', () => {
+        const name = document.getElementById('name').value || '';
+        const phone = document.getElementById('phone').value || '';
+        const desc = document.getElementById('desc').value || '';
+        const msg = `Halo Solusi Emas, nama saya ${name}. No: ${phone}. Info: ${desc}`;
+        window.open(buildWaLink(msg), '_blank');
+      });
+    })();
+  </script>
+</body>
+</html>
